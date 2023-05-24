@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const contentsOperations = document.querySelectorAll(
         '.operations__content',
     );
+    const nav = document.querySelector('.nav');
 
     const openModal = function (e) {
         e.preventDefault();
@@ -67,4 +68,22 @@ document.addEventListener('DOMContentLoaded', () => {
             .querySelector(`.operations__content--${tab.dataset.tab}`)
             .classList.add('operations__content--active');
     });
+
+    const handleHover = (e, opacityValue) => {
+        if (e.target.classList.contains('nav__link')) {
+            const link = e.target;
+            const siblings = link
+                .closest('.nav')
+                .querySelectorAll('.nav__link');
+            const img = link.closest('.nav').querySelector('img');
+
+            siblings.forEach(elem => {
+                if (elem !== link) elem.style.opacity = opacityValue;
+            });
+            img.style.opacity = opacityValue;
+        }
+    };
+
+    nav.addEventListener('mouseover', e => handleHover(e, 0.5));
+    nav.addEventListener('mouseout', e => handleHover(e, 1));
 });
