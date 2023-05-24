@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     );
     const nav = document.querySelector('.nav');
     const header = document.querySelector('header');
+    const sections = document.querySelectorAll('.section');
 
     const openModal = e => {
         e.preventDefault();
@@ -54,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const navHeight = nav.getBoundingClientRect().height;
-    console.log(navHeight);
 
     const headerObserver = new IntersectionObserver(stickyNav, {
         root: null,
@@ -63,6 +63,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     headerObserver.observe(header);
+
+    const revealSection = (entries, observer) => {
+        const [entry] = entries;
+
+        if (!entry.isIntersecting) return;
+
+        entry.target.classList.remove('section--hidden');
+
+        observer.unobserve(entry.target);
+    };
+
+    const sectionsObserver = new IntersectionObserver(revealSection, {
+        root: null,
+        threshold: 0.15,
+    });
+
+    sections.forEach(section => {
+        section.classList.add('section--hidden');
+        sectionsObserver.observe(section);
+    });
 
     btnsOpenModal.forEach(btn => btn.addEventListener('click', openModal));
 
