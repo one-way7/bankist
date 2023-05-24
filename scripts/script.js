@@ -17,6 +17,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const header = document.querySelector('header');
     const sections = document.querySelectorAll('.section');
     const imgTargets = document.querySelectorAll('img[data-src]');
+    const slides = document.querySelectorAll('.slide');
+    const btnLeft = document.querySelector('.slider__btn--left');
+    const btnRight = document.querySelector('.slider__btn--right');
+
+    const maxSlides = slides.length - 1;
+    let currSlide = 0;
+
+    const goToSlide = (slide = 0) => {
+        slides.forEach((elem, i) => {
+            elem.style.transform = `translateX(${100 * (i - slide)}%)`;
+        });
+    };
+    goToSlide();
+
+    const nextSlide = () => {
+        if (currSlide === maxSlides) {
+            currSlide = 0;
+        } else {
+            currSlide++;
+        }
+
+        goToSlide(currSlide);
+    };
+
+    const prevSlide = () => {
+        if (currSlide === 0) {
+            currSlide = maxSlides;
+        } else {
+            currSlide--;
+        }
+
+        goToSlide(currSlide);
+    };
 
     const openModal = e => {
         e.preventDefault();
@@ -81,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     sections.forEach(section => {
-        section.classList.add('section--hidden');
+        // section.classList.add('section--hidden');
         sectionsObserver.observe(section);
     });
 
@@ -149,4 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     nav.addEventListener('mouseover', e => handleHover(e, 0.5));
     nav.addEventListener('mouseout', e => handleHover(e, 1));
+
+    btnRight.addEventListener('click', nextSlide);
+    btnLeft.addEventListener('click', prevSlide);
 });
