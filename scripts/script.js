@@ -14,18 +14,55 @@ document.addEventListener('DOMContentLoaded', () => {
         '.operations__content',
     );
     const nav = document.querySelector('.nav');
+    const header = document.querySelector('header');
 
-    const openModal = function (e) {
+    const openModal = e => {
         e.preventDefault();
 
         modal.classList.remove('hidden');
         overlay.classList.remove('hidden');
     };
 
-    const closeModal = function () {
+    const closeModal = () => {
         modal.classList.add('hidden');
         overlay.classList.add('hidden');
     };
+
+    const handleHover = (e, opacityValue) => {
+        if (e.target.classList.contains('nav__link')) {
+            const link = e.target;
+            const siblings = link
+                .closest('.nav')
+                .querySelectorAll('.nav__link');
+            const img = link.closest('.nav').querySelector('img');
+
+            siblings.forEach(elem => {
+                if (elem !== link) elem.style.opacity = opacityValue;
+            });
+            img.style.opacity = opacityValue;
+        }
+    };
+
+    const stickyNav = entries => {
+        const [entry] = entries;
+
+        if (!entry.isIntersecting) {
+            nav.classList.add('sticky');
+        } else {
+            nav.classList.remove('sticky');
+        }
+    };
+
+    const navHeight = nav.getBoundingClientRect().height;
+    console.log(navHeight);
+
+    const headerObserver = new IntersectionObserver(stickyNav, {
+        root: null,
+        threshold: 0,
+        rootMargin: `-${navHeight}px`,
+    });
+
+    headerObserver.observe(header);
 
     btnsOpenModal.forEach(btn => btn.addEventListener('click', openModal));
 
@@ -68,21 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .querySelector(`.operations__content--${tab.dataset.tab}`)
             .classList.add('operations__content--active');
     });
-
-    const handleHover = (e, opacityValue) => {
-        if (e.target.classList.contains('nav__link')) {
-            const link = e.target;
-            const siblings = link
-                .closest('.nav')
-                .querySelectorAll('.nav__link');
-            const img = link.closest('.nav').querySelector('img');
-
-            siblings.forEach(elem => {
-                if (elem !== link) elem.style.opacity = opacityValue;
-            });
-            img.style.opacity = opacityValue;
-        }
-    };
 
     nav.addEventListener('mouseover', e => handleHover(e, 0.5));
     nav.addEventListener('mouseout', e => handleHover(e, 1));
