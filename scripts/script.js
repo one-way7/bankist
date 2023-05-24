@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nav = document.querySelector('.nav');
     const header = document.querySelector('header');
     const sections = document.querySelectorAll('.section');
+    const imgTargets = document.querySelectorAll('img[data-src]');
 
     const openModal = e => {
         e.preventDefault();
@@ -83,6 +84,26 @@ document.addEventListener('DOMContentLoaded', () => {
         section.classList.add('section--hidden');
         sectionsObserver.observe(section);
     });
+
+    const loadImg = (entries, observe) => {
+        const [entry] = entries;
+        const img = entry.target;
+
+        if (!entry.isIntersecting) return;
+
+        img.src = img.dataset.src;
+        img.addEventListener('load', () => img.classList.remove('lazy-img'));
+
+        observe.unobserve(img);
+    };
+
+    const imgObserver = new IntersectionObserver(loadImg, {
+        root: null,
+        threshold: 0,
+        rootMargin: '200px',
+    });
+
+    imgTargets.forEach(img => imgObserver.observe(img));
 
     btnsOpenModal.forEach(btn => btn.addEventListener('click', openModal));
 
